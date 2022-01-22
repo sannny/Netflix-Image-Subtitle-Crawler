@@ -77,7 +77,7 @@ def clean_text(text):
     
 
 def appendRow(text,time):
-    final = [float(time[:-4]),convertSecondsToMinutes(time.replace('_','.')),clean_text(text)]
+    final = [float(time.replace('_','.')[:-4]),convertSecondsToMinutes(time.replace('_','.')),clean_text(text)]
     csv_rows.append(final)
 
 def writeCSV(filename):

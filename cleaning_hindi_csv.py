@@ -22,61 +22,14 @@ if not take its start time as your end time
 
 if so repeat the above process.
 """
-
-
-
-def timeStr_sanity_check(timestr):
-    coln_split = timestr.split(':')
-    if len(coln_split) == 3:
-        if '.' in coln_split[-1]:
-            return timestr
-        else:
-            return ''.join([timestr,'.000000'])
-    else:
-        no_of_appends = 3 - len(coln_split)
-        i = 1
-        while i <= no_of_appends:
-            if i == no_of_appends:
-                timestr = ''.join([timestr,'00.000000'])
-            else:
-                timestr = ''.join([timestr,'00:'])
-            i+=1
-    return timestr
         
 
 def convertSecondsToMinutes(time):
-    return str(datetime.timedelta(seconds=float(time[:-4])))
+    return str(datetime.timedelta(seconds=float(time)))
 
-"""
-Unit tests
 
-wrong format
 
-pass in null
-
-pass in just a number
-
-"""
-def str_to_time(time_Str):
-    return datetime.datetime.strptime(timeStr_sanity_check(time_Str),'%H:%M:%S.%f')
-
-"""
-Unit tests
-
-wrong format
-
-pass in null
-
-pass in just a number
-
-"""
-def datetime_add(start,diff):
-    time_zero = datetime.datetime.strptime('00:00:00', '%H:%M:%S')
-    return  ((str_to_time(start) - time_zero + str_to_time(diff)).time())
-
-#print(type(datetime_add('0:19:40.032000','00:00:02.000000')))
-
-final_output = [['start_time','end_time','caption']]
+final_output = [['start_time(sec)','end_time(sec)','start_time','end_time','caption']]
 
 """
 Unit tests
@@ -95,6 +48,8 @@ pass in a dict, set wrong datatype
 
 """
 
+
+
 def getting_end_time(val_list):
     vlen = len(val_list)
     start_time = ''
@@ -102,8 +57,11 @@ def getting_end_time(val_list):
     update_flag = 0
     curr = 0
     while curr < vlen:
+        print('index',curr)
         if curr == vlen-1:
-            end_time = datetime_add(val_list[curr][0],'00:00:02.000000')
+            if update_flag == 0:
+                start_time = val_list[curr][0]
+            end_time = val_list[curr][0]+2.0
         
         elif val_list[curr][2] == val_list[curr+1][2]:
             if update_flag == 0:
@@ -115,16 +73,26 @@ def getting_end_time(val_list):
             start_time = val_list[curr][0]
         
         if end_time == None:
-            end_time = str_to_time(val_list[curr+1][0]).time()
-        print(start_time)
-        final_output.append([str_to_time(start_time).time(),end_time,val_list[curr][2]])
+            end_time = val_list[curr+1][0]-0.001
+        print('start_time',convertSecondsToMinutes(start_time))
+        print('end_time',convertSecondsToMinutes(end_time))
+        final_output.append([start_time,end_time,convertSecondsToMinutes(start_time),convertSecondsToMinutes(end_time),val_list[curr][2]])
         start_time = ''
         end_time = None
         update_flag = 0
         curr+=1
 
+    return final_output
+
+def writeCSV(filename):
+
+    with open(filename, 'w') as csvfile:
+
+        df = pd.DataFrame(final_output)  
+        df.to_excel('D:\\linux\\scratches\\Netflix_image_subtitle_crawler\\Screenshots\\'+filename+".xlsx", engine='xlsxwriter')
+
 getting_end_time(hin_vals)
-print(final_output)
+#writeCSV('pilot_ep_1_w_endtime')
 
         
 
