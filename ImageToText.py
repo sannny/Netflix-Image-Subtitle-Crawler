@@ -21,7 +21,7 @@ sys.stdout.reconfigure(encoding='utf-8')
 
 #pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
 
-csv_rows = [['time','captions']]
+csv_rows = [['time(sec)','time','captions']]
 
 def reducingimg(perc,height,width):
     red_height = height*(perc/100)
@@ -77,7 +77,7 @@ def clean_text(text):
     
 
 def appendRow(text,time):
-    final = [convertSecondsToMinutes(time.replace('_','.')),clean_text(text)]
+    final = [float(time[:-4]),convertSecondsToMinutes(time.replace('_','.')),clean_text(text)]
     csv_rows.append(final)
 
 def writeCSV(filename):

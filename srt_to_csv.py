@@ -12,6 +12,8 @@ for sub in subs:
     cap = [sub.start.to_time(),sub.end.to_time(),sub.text]
     captions.append(cap)
 
+    
+
 
 
 print(len(subs))

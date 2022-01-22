@@ -28,7 +28,7 @@ player_info_close_button = '/html/body/div[4]/div/button'
 
 windows_users='DELL'
 
-ss_dir_path = '/src/Screenshots'
+ss_dir_path = '/src/Netflix_image_subtitle_crawler/Screenshots'
 
 
 class newName:
