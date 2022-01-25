@@ -2,16 +2,9 @@ from operator import index
 import xlsxwriter
 import pandas as pd
 import datetime
-
-filename = 'D:\\linux\\scratches\\Netflix_image_subtitle_crawler\\Screenshots\\pilot_ep_1.xlsx'
-
-xl_file = pd.read_excel(filename, sheet_name = 'Sheet1')
+from creds import *
 
 
-
-hin_vals = xl_file.sort_values(by=['time(sec)'], ascending=True).values.tolist()
-
-print(len(hin_vals))
 
 """
 in a loop
@@ -29,7 +22,6 @@ def convertSecondsToMinutes(time):
 
 
 
-final_output = [['start_time(sec)','end_time(sec)','start_time','end_time','caption']]
 
 """
 Unit tests
@@ -51,13 +43,16 @@ pass in a dict, set wrong datatype
 
 
 def getting_end_time(val_list):
+    hin_intervals = []
+    final_output = []
+        #['start_time(sec)','end_time(sec)','start_time','end_time','caption']]
     vlen = len(val_list)
     start_time = ''
     end_time = None
     update_flag = 0
     curr = 0
     while curr < vlen:
-        print('index',curr)
+        #print('index',curr)
         if curr == vlen-1:
             if update_flag == 0:
                 start_time = val_list[curr][0]
@@ -74,25 +69,33 @@ def getting_end_time(val_list):
         
         if end_time == None:
             end_time = val_list[curr+1][0]-0.001
-        print('start_time',convertSecondsToMinutes(start_time))
-        print('end_time',convertSecondsToMinutes(end_time))
+        #print('start_time',convertSecondsToMinutes(start_time))
+        #print('end_time',convertSecondsToMinutes(end_time))
+        hin_intervals.append([start_time,end_time])
         final_output.append([start_time,end_time,convertSecondsToMinutes(start_time),convertSecondsToMinutes(end_time),val_list[curr][2]])
         start_time = ''
         end_time = None
         update_flag = 0
         curr+=1
 
-    return final_output
+    return final_output,hin_intervals
 
-def writeCSV(filename):
+def writeCSV(filename,final_output):
 
     with open(filename, 'w') as csvfile:
 
-        df = pd.DataFrame(final_output)  
-        df.to_excel('D:\\linux\\scratches\\Netflix_image_subtitle_crawler\\Screenshots\\'+filename+".xlsx", engine='xlsxwriter')
+        df = pd.DataFrame(final_output).dropna() 
+        df.to_excel(ss_dir_path_win+filename+".xlsx", engine='xlsxwriter')
 
-getting_end_time(hin_vals)
-#writeCSV('pilot_ep_1_w_endtime')
+
+def getCleanHindiSubs(filename_clean_hindi):
+    xl_file = pd.read_excel(filename_clean_hindi, sheet_name = 'Sheet1')
+    hin_vals = xl_file.sort_values(by=['time(sec)'], ascending=True).values.tolist()
+    return getting_end_time(hin_vals)
+
+#hindi_subs,hin_intervals = getCleanHindiSubs(filename_clean_hindi)
+
+#writeCSV('pilot_ep_1_w_endtime',hindi_subs)
 
         
 

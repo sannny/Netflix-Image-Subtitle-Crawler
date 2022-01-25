@@ -30,6 +30,11 @@ windows_users='DELL'
 
 ss_dir_path = '/src/Netflix_image_subtitle_crawler/Screenshots'
 
+ss_dir_path_win = 'D:\\linux\\scratches\\Netflix_image_subtitle_crawler\\Screenshots\\'
+
+filename_clean_hindi = 'D:\\linux\\scratches\\Netflix_image_subtitle_crawler\\Screenshots\\pilot_ep_1.xlsx'
+
+
 
 class newName:
     
