@@ -23,17 +23,14 @@ sys.stdout.reconfigure(encoding='utf-8')
 
 csv_rows = [['time(sec)','time','captions']]
 
-def reducingimg(perc,height,width):
-    red_height = height*(perc/100)
-    red_width = width*(perc/100)
-    return int(red_height),int(red_width)+171,int(height-red_height),int(width-red_width)
-
 def creatingFilesPath(fileName):
     return ''.join([ss_dir_path,'\\',fileName])
 
-def croppingimg(img,perc):
-    y0,x0,x1,y1 = reducingimg(perc,img.shape[0],img.shape[1])
-    return img[x0:x1, y0:y1]
+def croppingimg(image):
+    height,width = image.shape[0],image.shape[1]
+    y0 = 0+(height*0.15)
+    y1 = height - (height*0.1)
+    return image[int(y0):int(y1), 0:width]
 
 def extract_Data(img):
     tesseract_output = pytesseract.image_to_data(image = img,lang='hin',output_type = 'dict')
@@ -98,8 +95,9 @@ def start_extraction():
     files = rename.list_all_files()
     fl = len(files)
     for i,file in enumerate(files):
-        appendRow(extract_Data(croppingimg(openImg(creatingFilesPath(file)),10)),file)
-        print(i,'files of ',fl,'read')
+        if '.png' in file:
+            appendRow(extract_Data(croppingimg(openImg(creatingFilesPath(file)))),file)
+            print(i,'files of ',fl,'read')
     writeCSV(creatingFilesPath('pilot_ep_1'))
 
 
