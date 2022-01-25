@@ -24,20 +24,22 @@ sys.stdout.reconfigure(encoding='utf-8')
 csv_rows = [['time(sec)','time','captions']]
 
 def creatingFilesPath(fileName):
-    return ''.join([ss_dir_path,'\\',fileName])
+    return ''.join([ss_dir_path,'/',fileName])
+
 
 def croppingimg(image):
     height,width = image.shape[0],image.shape[1]
     y0 = 0+(height*0.15)
-    y1 = height - (height*0.1)
-    return image[int(y0):int(y1), 0:width]
+    y1 = height - (height*0.13)
+    delta_width = width*0.20
+    return image[int(y0):int(y1), int(0+delta_width):int(width-delta_width)]
 
 def extract_Data(img):
     tesseract_output = pytesseract.image_to_data(image = img,lang='hin',output_type = 'dict')
     return ' '.join(tesseract_output['text']).strip()
 
 def openImg(path):
-    return cv2.imread(path,0)
+    return cv2.imread(path)
 
 def convertSecondsToMinutes(time):
     return str(datetime.timedelta(seconds=float(time[:-4])))
@@ -82,7 +84,7 @@ def writeCSV(filename):
     with open(filename, 'w') as csvfile:
 
         df = pd.DataFrame(csv_rows)  
-        df.to_excel(filename+".xlsx", engine='xlsxwriter')
+        df.to_excel(''.join([filename,".xlsx"]), engine='xlsxwriter')
         # creating a csv writer object  
         #csvwriter = csv.writer(csvfile)  
             
@@ -94,9 +96,10 @@ def start_extraction():
     rename.switch_to_ss_dir()
     files = rename.list_all_files()
     fl = len(files)
+    filter = filter_image(None)
     for i,file in enumerate(files):
         if '.png' in file:
-            appendRow(extract_Data(croppingimg(openImg(creatingFilesPath(file)))),file)
+            appendRow(extract_Data(filter.applyingFilters(croppingimg(openImg(creatingFilesPath(file))))),file)
             print(i,'files of ',fl,'read')
     writeCSV(creatingFilesPath('pilot_ep_1'))
 
@@ -112,11 +115,11 @@ start_extraction()
 """rename = renaming()
 rename.switch_to_ss_dir()
 files = rename.list_all_files()
-filePath = ''.join([ss_dir_path,'\\','16_547.png'])
+filePath = ''.join([ss_dir_path_win,'\\','16_547.png'])
 img = cv2.imread(filePath,0)
-y0,x0,x1,y1 = reducingimg(10,img.shape[0],img.shape[1])
-filtered = filter_image(filePath)
-cropped_image = filtered.applyingFilters()
+#y0,x0,x1,y1 = reducingimg(10,img.shape[0],img.shape[1])
+filtered = filter_image()
+cropped_image = filtered.applyingFilters(img)
 # Cropping an image
 #cropped_image = img[x0:x1, y0:y1]
 #cv2.imshow("Display window",cropped_image)
@@ -128,4 +131,5 @@ extracted_text = ' '.join(tesseract_output['text']).strip()
 appendRow(extracted_text,'16_547.png')
 writeCSV(creatingFilesPath('test'))
 print(extracted_text)
-#cv2.destroyAllWindows()"""
+#cv2.destroyAllWindows()
+"""
