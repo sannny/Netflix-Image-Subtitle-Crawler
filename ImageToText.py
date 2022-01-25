@@ -19,7 +19,7 @@ import re
 sys.stdout.reconfigure(encoding='utf-8')
 
 
-#pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
+#pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract'
 
 csv_rows = [['time(sec)','time','captions']]
 
@@ -76,15 +76,16 @@ def clean_text(text):
     
 
 def appendRow(text,time):
-    final = [float(time.replace('_','.')[:-4]),convertSecondsToMinutes(time.replace('_','.')),clean_text(text)]
+    final = [float(time.replace('_','.')[:-4]),convertSecondsToMinutes(time.replace('_','.')),text]#clean_text(text)]
     csv_rows.append(final)
 
 def writeCSV(filename):
 
-    with open(filename, 'w') as csvfile:
-
+    filepath = ''.join([filename,".xlsx"])
+    with open(filepath, 'w') as csvfile:
+        
         df = pd.DataFrame(csv_rows)  
-        df.to_excel(''.join([filename,".xlsx"]), engine='xlsxwriter')
+        df.to_excel(filepath, engine='xlsxwriter')
         # creating a csv writer object  
         #csvwriter = csv.writer(csvfile)  
             
@@ -112,14 +113,14 @@ start_extraction()
         
 
 
-"""rename = renaming()
-rename.switch_to_ss_dir()
-files = rename.list_all_files()
-filePath = ''.join([ss_dir_path_win,'\\','16_547.png'])
-img = cv2.imread(filePath,0)
+#rename = renaming()
+#rename.switch_to_ss_dir()
+#files = rename.list_all_files()
+"""filePath = ''.join([ss_dir_path,'\\','180_912.png'])
+img = cv2.imread(filePath)
 #y0,x0,x1,y1 = reducingimg(10,img.shape[0],img.shape[1])
-filtered = filter_image()
-cropped_image = filtered.applyingFilters(img)
+filtered = filter_image(img)
+cropped_image = filtered.applyingFilters(croppingimg(img))
 # Cropping an image
 #cropped_image = img[x0:x1, y0:y1]
 #cv2.imshow("Display window",cropped_image)
@@ -128,7 +129,7 @@ tesseract_output = pytesseract.image_to_data(image = cropped_image,lang='hin',ou
 #combining_marks = (' '.join(tesseract_output['text'])).encode('raw-unicode-escape').decode('utf-8').lstrip()
 #sys.stdout.buffer.write((' '.join(tesseract_output['text'])).encode('raw-unicode-escape'))
 extracted_text = ' '.join(tesseract_output['text']).strip()
-appendRow(extracted_text,'16_547.png')
+appendRow(extracted_text,'180_912.png')
 writeCSV(creatingFilesPath('test'))
 print(extracted_text)
 #cv2.destroyAllWindows()
