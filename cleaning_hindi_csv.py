@@ -65,7 +65,8 @@ def getting_end_time(val_list):
             curr+=1
             continue
         else:
-            start_time = val_list[curr][0]
+            if update_flag == 0:
+                start_time = val_list[curr][0]
         
         if end_time == None:
             end_time = val_list[curr+1][0]-0.001
@@ -98,7 +99,4 @@ def getCleanHindiSubs(filename_clean_hindi):
 #writeCSV('pilot_ep_1_w_endtime',hindi_subs)
 
         
-
-
-
 
