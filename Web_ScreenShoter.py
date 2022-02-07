@@ -10,7 +10,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as EC  
 from selenium.common.exceptions import TimeoutException
 from io import StringIO
 import pyautogui
@@ -36,25 +36,14 @@ def getSearchURL(series_name):
 def full_Screen_browser(webdriver):
     webdriver.maximize_window()
 
-def PauseTheVid(webdriver):
-    actions = ActionChains(webdriver)
-    actions.send_keys(Keys.SPACE).perform()
-
-
 def enablePlayerDiagnostics(webdriver):
+    #pyautogui.hotkey('ctrl','alt', 'shift', 'd')
     actions = ActionChains(webdriver)
     actions.key_down(Keys.CONTROL).key_down(Keys.ALT).key_down(Keys.SHIFT).send_keys('d').perform()
-
-def enable_disable_full_screen():
-    pyautogui.click(x=750, y=600, clicks=2)
-
 
 def enablePlayerControls(webdriver):
     actions = ActionChains(webdriver)
     actions.send_keys(Keys.END).perform()
-
-def Take_a_screenshot():
-    pyautogui.hotkey('win', 'printscreen')
 
 def getPlayerDiagInfo(webdriver):
     js = """return document.evaluate('//html/body/div[4]/textarea', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.value;"""
@@ -74,48 +63,83 @@ def dumpPlayerDiagInfoDict(webdriver):
             d[kvlst[0].strip()] = val
     return d
 
-def checkRenderingState(webdriver,curr_state):
-    if curr_state != 'Paused':
-        PauseTheVid(webdriver)
-
-def move_to_beginning(webdriver):
-    diags = dumpPlayerDiagInfoDict(webdriver)
-    #no_of_backs = int(math.ceil(float(curr_position)/10))
-    total_duration = diags['PlayerDuration']
-    if float(diags['Position']) <= 1.0:
-        return total_duration
-    checkRenderingState(webdriver,diags['Rendering state'])
-    actions = ActionChains(webdriver)
-    while int(round(float(diags['Position']))) >= 1.0:
-        actions.send_keys(Keys.ARROW_LEFT).perform()
-        diags = dumpPlayerDiagInfoDict(webdriver)
-        checkRenderingState(webdriver,diags['Rendering state'])
-        time.sleep(2)
-    checkRenderingState(webdriver,diags['Rendering state'])
-    return total_duration
-
 def player_info_close():
     getElement(player_info_close_button).click()
+
+def getPlayerDiagnostics(webdriver):
+    enablePlayerControls(webdriver)
+    enablePlayerDiagnostics(webdriver)
+    diags = dumpPlayerDiagInfoDict(webdriver)
+    #time.sleep(3)
+    player_info_close()
+    return diags
+
+def play_pause_button(webdriver):
+    pyautogui.moveTo(960,560)
+    pyautogui.move(0,-200)
+    pyautogui.click()
+    #pyautogui.press('enter')
+"""  actions = ActionChains(webdriver)"""    
+"""     actions.send_keys(Keys.SPACE).perform()"""    
+
+def Play_Pause(state,webdriver):
+    
+    diags = getPlayerDiagnostics(webdriver)
+    
+    if diags['Rendering state'] == 'Playing':
+        if state != 'play':
+            play_pause_button(webdriver)
+    else:
+        if state != 'pause':
+            play_pause_button(webdriver)
+
+
+def enable_disable_full_screen():
+    pyautogui.click(x=750, y=600, clicks=2)
+
+
+def Take_a_screenshot():
+    pyautogui.hotkey('win', 'printscreen')
+
+
+def move_to_beginning(webdriver):
+    diags = getPlayerDiagnostics(webdriver)
+    #no_of_backs = int(math.ceil(float(curr_position)/10))
+    total_duration = diags['PlayerDuration']
+    # if float(diags['Position']) <= 1.0:
+    #     return total_duration
+    # Play_Pause('pause',webdriver)
+    # actions = ActionChains(webdriver)
+    # while int(round(float(diags['Position']))) >= 1.0:
+    #     pyautogui.move(0,1,1)
+    #     actions.send_keys(Keys.ARROW_LEFT).perform()
+    #     diags = getPlayerDiagnostics(webdriver)
+    #     Play_Pause('pause',webdriver)
+    #     time.sleep(2)
+    # Play_Pause('pause',webdriver)
+    pyautogui.moveTo(25,882)
+    pyautogui.leftClick()
+    return total_duration
 
 
 
 def start_gathering(webdriver,total_duration):
     #enable_disable_full_screen()
     diags={}
-    """enablePlayerDiagnostics(webdriver)
-    diags = dumpPlayerDiagInfoDict(webdriver)
+    """
+    diags = getPlayerDiagnostics(webdriver)
     checkRenderingState(webdriver,diags['Rendering state'])
-    player_info_close()"""
+    """
     rename = renaming()
     rename.clean_dir()
     while float(diags.get('Position',-1)) != total_duration:
-        PauseTheVid(webdriver)
-        time.sleep(2)
-        PauseTheVid(webdriver)
-        enablePlayerDiagnostics(webdriver)
-        diags = dumpPlayerDiagInfoDict(webdriver)
-        #checkRenderingState(webdriver,diags['Rendering state'])
-        player_info_close()
+        Play_Pause('play',webdriver)
+        #time.sleep(1.5)
+        Play_Pause('pause',webdriver)
+        
+        diags = getPlayerDiagnostics(webdriver)
+        #Play_Pause('pause',webdriver)
+        
         Take_a_screenshot()
         NN = newName(diags['Position'])
         rename.__main__(NN) 
@@ -152,24 +176,27 @@ for title in movie_titles:
         driver.get(title[1])
         break
 
-enablePlayerControls(driver)
-time.sleep(5)
-PauseTheVid(driver)
-enablePlayerDiagnostics(driver)
+time.sleep(15)
+
+Play_Pause('pause',driver)
+
+#time.sleep(5)
 total_duration = move_to_beginning(driver)
-player_info_close()
 start_gathering(driver,total_duration)
 
+time.sleep(5)
+
 """time.sleep(3)
-PauseTheVid(driver)
+Play_Pause(driver)
 driver.save_screenshot(img_path)
-PauseTheVid(driver)
+Play_Pause(driver)
 time.sleep(3)
-PauseTheVid(driver)
+Play_Pause(driver)
 driver.save_screenshot(img_path)"""
  
 """ waitForPlayerControlsByClassName(driver)"""
 
+driver.quit()
 
 
 

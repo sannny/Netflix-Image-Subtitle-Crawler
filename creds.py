@@ -28,6 +28,8 @@ player_info_close_button = '/html/body/div[4]/div/button'
 
 windows_users='DELL'
 
+pc_ss_dir_path = 'C:\\Users\\DELL\\Pictures\\Screenshots'
+
 ss_dir_path = '/src/Netflix_image_subtitle_crawler/Screenshots'
 
 ss_dir_path_win = 'D:\\linux\\scratches\\Netflix_image_subtitle_crawler\\Screenshots\\'
