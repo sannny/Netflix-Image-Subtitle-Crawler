@@ -24,6 +24,8 @@ for sub in subs:
 hindi_subs,hin_intervals = getCleanHindiSubs(filename_clean_hindi)
 
 def final_interval(en,hin):
+    en =  [list( map(float,i) ) for i in en]
+    hin =  [list( map(float,i) ) for i in hin]
     comb = []
     hlen = len(hin)
     elen = len(en)
@@ -64,8 +66,9 @@ take the combination of lowest and highest.
 mix all to cover the extras
 
 """
-def merge(intervals: list[list[int]]) -> list[list[int]]:
-
+def merge(intervals: list[list[float]]) -> list[list[float]]:
+        
+        intervals =  [list( map(float,i) ) for i in intervals]
         merged = []
         for interval in intervals:
             # if the list of merged intervals is empty or if the current
@@ -116,5 +119,5 @@ def putting_subs_together(intervals):
 
 putting_subs_together(merge(final_interval(en_interval,hin_intervals)))
 
-print(captions[1])
-print(hindi_subs[1])
+#print(captions[1])
+#print(hindi_subs[1])
