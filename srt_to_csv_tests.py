@@ -114,11 +114,58 @@ class merged_test(unittest.TestCase):
                 [6.8,8.8],
                 [10.8,11.8]
             ]
-            
+
         self.assertEqual(merge(input),ans)
 
-        
+class putting_subs_together_tests(unittest.TestCase):
+    def test_None(self):
+        with self.assertRaises(Exception):
+            putting_subs_together(None,None,None) 
 
+    def test_empty(self):
+        input = []
+        ans = [['start_time', 'end_time', 'hindi', 'english']]
+        self.assertEqual(putting_subs_together(input,[],[]),ans)
+    
+    def test_alphabet(self):
+        input_en = [
+                    ['ab', 1.8,convertSecondsToMinutes(0.1),convertSecondsToMinutes(1.8),'hey!'],
+                    [1.9, 3.8,convertSecondsToMinutes(1.9),convertSecondsToMinutes(3.8),'How are you?'],
+                    [6.8, 7.8,convertSecondsToMinutes(6.8),convertSecondsToMinutes(7.8),'Whats going on with you?']
+                ]
+        input_hing = [
+                    ['cd', 2.0,convertSecondsToMinutes(0.6),convertSecondsToMinutes(2.0),'hey!'],
+                    [1.5, 3.5,convertSecondsToMinutes(1.5),convertSecondsToMinutes(3.5),'kya haal hai?'],
+                    [7.8, 8.8,convertSecondsToMinutes(7.8),convertSecondsToMinutes(8.8),'kya chal raha hai?'],
+                ]
+        interval = [
+                ['ab',3.8],
+                [6.8,8.8],
+            ]       
+        with self.assertRaises(Exception):
+            putting_subs_together(interval,input_hing,input_en)
+
+    def test_correct_case(self):
+        input_en = [
+                    [0.1, 1.8,convertSecondsToMinutes(0.1),convertSecondsToMinutes(1.8),'hey!'],
+                    [1.9, 3.8,convertSecondsToMinutes(1.9),convertSecondsToMinutes(3.8),'How are you?'],
+                    [6.8, 7.8,convertSecondsToMinutes(6.8),convertSecondsToMinutes(7.8),'Whats going on with you?']
+                ]
+        input_hing = [
+                    [0.6, 2.0,convertSecondsToMinutes(0.6),convertSecondsToMinutes(2.0),'hey!'],
+                    [1.5, 3.5,convertSecondsToMinutes(1.5),convertSecondsToMinutes(3.5),'kya haal hai?'],
+                    [7.8, 8.8,convertSecondsToMinutes(7.8),convertSecondsToMinutes(8.8),'kya chal raha hai?'],
+                ]
+        interval = [
+                [0.1,3.8],
+                [6.8,8.8],
+            ]       
+        ans = [
+                ['start_time', 'end_time', 'hindi', 'english'],
+                [0.1,3.8,' hey! kya haal hai?',' hey! How are you?'],
+                [6.8,8.8,' kya chal raha hai?',' Whats going on with you?'],
+            ]
+        self.assertEqual(putting_subs_together(interval,input_hing,input_en),ans)
 
 if __name__ == '__main__':
     unittest.main()

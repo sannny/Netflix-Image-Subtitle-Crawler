@@ -1,6 +1,5 @@
 from typing import final
 import pysrt
-
 import pandas as pd
 from cleaning_hindi_csv import *
 
@@ -89,7 +88,16 @@ def writeCSV(filename,final_output):
         df = pd.DataFrame(final_output).dropna() 
         df.to_excel(ss_dir_path_win+filename+".xlsx", engine='xlsxwriter')
 
-def putting_subs_together(intervals):
+def putting_subs_together(intervals,hindi_subs,captions):
+
+    for i,hindi_sub in enumerate(hindi_subs):
+        hindi_subs[i][0] = float(hindi_sub[0])
+        hindi_subs[i][1] = float(hindi_sub[1])
+    
+    for i,caption in enumerate(captions):
+        captions[i][0] = float(caption[0])
+        captions[i][1] = float(caption[1])
+
 
     final = [['start_time','end_time','hindi','english']]
 
@@ -113,11 +121,11 @@ def putting_subs_together(intervals):
         
         final.append(bucket.copy()+[hin,en])
     
-    writeCSV('pilot_ep_1_final_script',final)
+    return final
 
 
 
-putting_subs_together(merge(final_interval(en_interval,hin_intervals)))
+writeCSV('pilot_ep_1_final_script',putting_subs_together(merge(final_interval(en_interval,hin_intervals)),hindi_subs,captions))
 
 #print(captions[1])
 #print(hindi_subs[1])
