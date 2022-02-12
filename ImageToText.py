@@ -105,7 +105,7 @@ def start_extraction():
     writeCSV(creatingFilesPath('pilot_ep_1'))
 
 
-start_extraction()
+#start_extraction()
     
 
 
