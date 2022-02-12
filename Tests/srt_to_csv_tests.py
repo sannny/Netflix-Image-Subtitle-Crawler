@@ -1,4 +1,6 @@
 import unittest
+import sys
+sys.path.insert(1, 'D:\\linux\\scratches\\Netflix_image_subtitle_crawler')
 from srt_to_csv import * 
 
 class final_inter_tests(unittest.TestCase):
@@ -166,6 +168,3 @@ class putting_subs_together_tests(unittest.TestCase):
                 [6.8,8.8,' kya chal raha hai?',' Whats going on with you?'],
             ]
         self.assertEqual(putting_subs_together(interval,input_hing,input_en),ans)
-
-if __name__ == '__main__':
-    unittest.main()

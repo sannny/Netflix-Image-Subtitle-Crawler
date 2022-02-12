@@ -1,5 +1,9 @@
 import unittest
+import coverage
+import sys
+sys.path.insert(1, 'D:\\linux\\scratches\\Netflix_image_subtitle_crawler')
 from cleaning_hindi_csv import *
+
 
 class convertSecondsToMinutesTest(unittest.TestCase):
     def test_None(self):
@@ -16,7 +20,7 @@ class convertSecondsToMinutesTest(unittest.TestCase):
         with self.assertRaises(Exception):
             convertSecondsToMinutes(ans)
 
-    def test_time_sec(self):
+    def test_time_secs(self):
         ans = 170
         self.assertEqual(convertSecondsToMinutes(ans),'0:02:50')
 
@@ -57,7 +61,3 @@ class getting_end_time_tests(unittest.TestCase):
                                                 )
                             )
         
-
-
-if __name__ == '__main__':
-    unittest.main()

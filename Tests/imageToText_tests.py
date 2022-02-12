@@ -5,10 +5,7 @@ from PIL import Image
 import sys
 sys.path.insert(1, 'D:\\linux\\scratches\\Netflix_image_subtitle_crawler')
 from ImageToText import *
-import coverage
 
-cov = coverage.Coverage()
-cov.start()
 
 class cropping_img_tests(unittest.TestCase):
     def test_None(self):
@@ -44,9 +41,3 @@ if __name__ == '__main__':
     tests.test_emptyList()
     tests.test_alphabets()
     tests.test_numeric()
-
-
-cov.stop()
-cov.save()
-
-cov.html_report()
