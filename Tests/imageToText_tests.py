@@ -1,7 +1,14 @@
+from cgi import test
 import unittest
 import numpy as np
 from PIL import Image
+import sys
+sys.path.insert(1, 'D:\\linux\\scratches\\Netflix_image_subtitle_crawler')
 from ImageToText import *
+import coverage
+
+cov = coverage.Coverage()
+cov.start()
 
 class cropping_img_tests(unittest.TestCase):
     def test_None(self):
@@ -31,6 +38,15 @@ class cropping_img_tests(unittest.TestCase):
         ans = np.asarray(img[116:677,353:1412]).all()
         self.assertEqual(out,ans)
 
-    
+if __name__ == '__main__':
+    tests = cropping_img_tests()
+    tests.test_None()
+    tests.test_emptyList()
+    tests.test_alphabets()
+    tests.test_numeric()
 
 
+cov.stop()
+cov.save()
+
+cov.html_report()

@@ -13,6 +13,10 @@ from filtering import *
 import string
 from html.parser import HTMLParser 
 import re
+# import coverage
+
+# cov = coverage.Coverage()
+# cov.start()
 
 
 
@@ -107,7 +111,10 @@ def start_extraction():
 
 #start_extraction()
     
+# cov.stop()
+# cov.save()
 
+# cov.html_report()
 
 
         
