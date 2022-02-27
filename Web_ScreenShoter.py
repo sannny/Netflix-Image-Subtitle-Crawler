@@ -16,17 +16,54 @@ from io import StringIO
 import pyautogui
 import math
 
-os.system('spoof-mac.py set 00:00:00:00:00:00 en0')
-chrome_options = webdriver.ChromeOptions()
-#chrome_options.add_argument("--incognito")
-prefs = {"profile.default_content_setting_values.notifications" : 2}
-chrome_options.add_experimental_option("prefs",prefs)
-#chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
-#chrome_options.add_experimental_option("useAutomationExtension", False)
-driver = webdriver.Chrome(chromeDriverPath,chrome_options=chrome_options)
-driver.delete_all_cookies()
+# os.system('spoof-mac.py set 00:00:00:00:00:00 en0')
+# chrome_options = webdriver.ChromeOptions()
+# #chrome_options.add_argument("--incognito")
+# prefs = {"profile.default_content_setting_values.notifications" : 2}
+# chrome_options.add_experimental_option("prefs",prefs)
+# #chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+# #chrome_options.add_experimental_option("useAutomationExtension", False)
+# driver = webdriver.Chrome(chromeDriverPath,chrome_options=chrome_options)
 
-def getElement(xPath):
+def init(driver):
+    
+    driver.delete_all_cookies()
+    full_Screen_browser(driver)
+    driver.get(website)
+    time.sleep(10)
+
+    signin = getElement(driver,sign_in_xpath).click()
+    time.sleep(5)
+
+
+    email_field = getElement(driver,email_xpath).send_keys(email_id)
+    pass_field = getElement(driver,pass_xpath).send_keys(password)
+    signin_but = getElement(driver,signin_xpath).click()
+
+    time.sleep(7)
+
+    sann_profile = getElement(driver,sann_profile_xpath).click()
+
+    time.sleep(5)
+
+    driver.get(getSearchURL(series_name))
+
+    time.sleep(5)
+
+    # return list of movies:
+    movies_div = driver.find_elements_by_class_name("title-card")
+    movie_titles = [(div.find_element_by_css_selector('a').get_attribute("aria-label"),div.find_element_by_css_selector('a').get_attribute("href")) for div in movies_div]
+    for title in movie_titles:
+        if title[0].lower().replace(' ','') ==  series_name.lower().replace(' ',''):
+            driver.get(title[1])
+            break
+
+    time.sleep(15)
+
+    Play_Pause('pause',driver)
+
+
+def getElement(driver,xPath):
     return driver.find_element_by_xpath(xPath)
 
 def getSearchURL(series_name):
@@ -63,15 +100,15 @@ def dumpPlayerDiagInfoDict(webdriver):
             d[kvlst[0].strip()] = val
     return d
 
-def player_info_close():
-    getElement(player_info_close_button).click()
+def player_info_close(driver):
+    getElement(driver,player_info_close_button).click()
 
 def getPlayerDiagnostics(webdriver):
     enablePlayerControls(webdriver)
     enablePlayerDiagnostics(webdriver)
     diags = dumpPlayerDiagInfoDict(webdriver)
     #time.sleep(3)
-    player_info_close()
+    player_info_close(webdriver)
     return diags
 
 def play_pause_button(webdriver):
@@ -117,7 +154,7 @@ def move_to_beginning(webdriver):
     #     Play_Pause('pause',webdriver)
     #     time.sleep(2)
     # Play_Pause('pause',webdriver)
-    pyautogui.moveTo(25,882)
+    pyautogui.moveTo(22,882)
     pyautogui.leftClick()
     return total_duration
 
@@ -132,7 +169,7 @@ def start_gathering(webdriver,total_duration):
     """
     rename = renaming()
     rename.clean_dir()
-    while float(diags.get('Position',-1)) != total_duration:
+    while float(diags.get('Position',-1)) <= total_duration:
         Play_Pause('play',webdriver)
         #time.sleep(1.5)
         Play_Pause('pause',webdriver)
@@ -145,46 +182,12 @@ def start_gathering(webdriver,total_duration):
         rename.__main__(NN) 
        
 
+def initialize(driver):
+    #time.sleep(5)
+    total_duration = move_to_beginning(driver)
+    start_gathering(driver,total_duration)
 
-full_Screen_browser(driver)
-driver.get(website)
-time.sleep(2)
-
-signin = getElement(sign_in_xpath).click()
-time.sleep(5)
-
-
-email_field = getElement(email_xpath).send_keys(email_id)
-pass_field = getElement(pass_xpath).send_keys(password)
-signin_but = getElement(signin_xpath).click()
-
-time.sleep(7)
-
-sann_profile = getElement(sann_profile_xpath).click()
-
-time.sleep(5)
-
-driver.get(getSearchURL(series_name))
-
-time.sleep(5)
-
-# return list of movies:
-movies_div = driver.find_elements_by_class_name("title-card")
-movie_titles = [(div.find_element_by_css_selector('a').get_attribute("aria-label"),div.find_element_by_css_selector('a').get_attribute("href")) for div in movies_div]
-for title in movie_titles:
-    if title[0].lower().replace(' ','') ==  series_name.lower().replace(' ',''):
-        driver.get(title[1])
-        break
-
-time.sleep(15)
-
-Play_Pause('pause',driver)
-
-#time.sleep(5)
-total_duration = move_to_beginning(driver)
-start_gathering(driver,total_duration)
-
-time.sleep(5)
+    time.sleep(5)
 
 """time.sleep(3)
 Play_Pause(driver)
@@ -196,7 +199,7 @@ driver.save_screenshot(img_path)"""
  
 """ waitForPlayerControlsByClassName(driver)"""
 
-driver.quit()
+#driver.quit()
 
 
 
