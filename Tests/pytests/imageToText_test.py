@@ -1,21 +1,21 @@
 from cgi import test
-import unittest
 import numpy as np
 from PIL import Image
 import sys
 sys.path.insert(1, 'D:\\linux\\scratches\\Netflix_image_subtitle_crawler')
 from ImageToText import *
-
+import pytest
+import unittest
 
 class cropping_img_tests(unittest.TestCase):
     def test_None(self):
         input = None
-        with self.assertRaises(Exception):
+        with pytest.raises(Exception):
             croppingimg(input)
 
     def test_emptyList(self):
         input = [[],[],[]]
-        with self.assertRaises(Exception):
+        with pytest.raises(Exception):
             croppingimg(input)
 
 
@@ -25,7 +25,7 @@ class cropping_img_tests(unittest.TestCase):
                     [43,122,44,5,5,3,2,45,6,7,7,88,'cd',1234,44,34,556,23,35,23,23],
                     ['ab',1,2,34,5,6,78,2,34,56,32,12,1234,44,34,556,23,35,23,23,266]
                 ]
-        with self.assertRaises(Exception):
+        with pytest.raises(Exception):
             croppingimg(input)
 
     def test_numeric(self):
@@ -33,11 +33,11 @@ class cropping_img_tests(unittest.TestCase):
         img = cv2.imread(file) 
         out = np.asarray(croppingimg(img)).all()       
         ans = np.asarray(img[116:677,353:1412]).all()
-        self.assertEqual(out,ans)
+        assert out == ans
 
-if __name__ == '__main__':
-    tests = cropping_img_tests()
-    tests.test_None()
-    tests.test_emptyList()
-    tests.test_alphabets()
-    tests.test_numeric()
+# if __name__ == '__main__':
+#     tests = cropping_img_tests()
+#     tests.test_None()
+#     tests.test_emptyList()
+#     tests.test_alphabets()
+#     tests.test_numeric()

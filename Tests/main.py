@@ -1,6 +1,6 @@
-from cleaning_hindi_csv_tests import * 
-from imageToText_tests import * 
-from srt_to_csv_tests import *
+from cleaning_hindi_csv_unittests import * 
+from imageToText_unittests import * 
+from srt_to_csv_unittests import *
 import coverage
 cov = coverage.Coverage()
 cov.start()

@@ -65,7 +65,7 @@ take the combination of lowest and highest.
 mix all to cover the extras
 
 """
-def merge(intervals: list[list[float]]) -> list[list[float]]:
+def merge(intervals):
         
         intervals =  [list( map(float,i) ) for i in intervals]
         merged = []

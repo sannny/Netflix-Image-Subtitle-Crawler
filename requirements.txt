@@ -1,0 +1,13 @@
+pip install opencv-python
+pip install xlsxwriter
+pip install openpyxl
+pip install pysrt
+pip install openpyxl
+pip install pytesseract
+pip install numpy
+pip install pandas
+pip install coverage
+pip install selenium
+pip install pyautogui
+pip install pytest 
+pip install pytest-bdd

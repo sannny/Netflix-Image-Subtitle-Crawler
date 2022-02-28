@@ -1,6 +1,8 @@
 import pytest
 from pytest_bdd import scenarios, given, when, then, parsers
-from Web_ScreenShoter import *
+import sys
+sys.path.insert(1, 'D:\\linux\\scratches\\Netflix_image_subtitle_crawler')
+from web_ScreenShoter import *
 import os
 from selenium import webdriver
 
@@ -45,7 +47,7 @@ def when_two(browser):
         Play_Pause('pause',driver)
         
         diags = getPlayerDiagnostics(driver)
-        #Play_Pause('pause',driver)
+        Play_Pause('pause',driver)
         
         Take_a_screenshot()
         NN = newName(diags['Position'])
